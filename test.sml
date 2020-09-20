@@ -12,8 +12,15 @@ fun test () =
             ("%%", [S "ab", C #"c"], "abc"),
             ("%%%", [S "ab", S "", C #"c"], "abc"),
             ("%", [I 4], "4"),
+            ("%", [R 1.0], "1.0"),
+            ("%", [R ~1.0], "-1.0"),
+            ("%", [B true], "true"),
+            ("%", [B false], "false"),
+            ("%", [SL ["a", "b", "c"]], "a\nb\nc"),
+            ("%", [RV (Vector.fromList [~1.0, 0.0, 1.0])], "[-1.0,0.0,1.0]"),
+            ("%", [RA (Array.fromList [~1.0, 0.0, 1.0])], "[-1.0,0.0,1.0]"),
+            ("%", [T (Time.fromMilliseconds 12345)], "12.345"),
             ("The %th storey", [I 4], "The 4th storey")
-                (* etc *)
         ]
         val (result, _) =
             foldl (fn ((str, values, expected), (success, n)) =>
