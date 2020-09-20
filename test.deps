@@ -1,0 +1,3 @@
+test: string-interpolate.sig
+test: string-interpolate.sml
+test: test.sml
