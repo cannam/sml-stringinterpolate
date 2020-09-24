@@ -21,7 +21,10 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
             intAux [] (String.explode str) values false
         end
 
-    val I = Int.toString
+    fun I i =
+        if i < 0
+        then "-" ^ I (~i)
+        else Int.toString i
 
     fun R r =
         if r < 0.0
