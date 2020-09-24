@@ -22,14 +22,19 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
         end
 
     val I = Int.toString
-    val R = Real.toString
+
+    fun R r =
+        if r < 0.0
+        then "-" ^ R (~r)
+        else Real.fmt (StringCvt.GEN (SOME 6)) r
+
     val C = String.str
     fun B b = if b then "true" else "false"
     fun S s = s
     val SL = String.concatWith "\n"
     fun RV v =
         let fun toList v = rev (Vector.foldl (op::) [] v)
-        in "[" ^ (String.concatWith "," (map Real.toString (toList v))) ^ "]"
+        in "[" ^ (String.concatWith "," (map R (toList v))) ^ "]"
         end
     fun RA a = RV (Array.vector a)
     val T = R o Time.toReal
