@@ -13,15 +13,32 @@ fun test () =
             ("%%%", [S "ab", S "", C #"c"], "abc"),
             ("%", [I 4], "4"),
             ("%", [I ~4], "-4"),
+            ("%", [R 0.0], "0.0"),
             ("%", [R 1.0], "1.0"),
+            ("%", [R 1.2], "1.2"),
+            ("%", [R Real.posInf], "inf"),
+            ("%", [R Real.negInf], "-inf"),
+            ("%", [R (Real.posInf + Real.negInf)], "nan"),
             ("%", [R ~1.0], "-1.0"),
+            ("%", [R ~1.0e~14], "-1.0e-14"),
+            ("%", [N 0.0], "0"),
+            ("%", [N 1.0], "1"),
+            ("%", [N 1.2], "1.2"),
+            ("%", [N Real.posInf], "inf"),
+            ("%", [N Real.negInf], "-inf"),
+            ("%", [N (Real.posInf + Real.negInf)], "nan"),
+            ("%", [N ~1.0], "-1"),
+            ("%", [N ~1.0e~14], "-1.0e-14"),
             ("%", [B true], "true"),
             ("%", [B false], "false"),
             ("%", [SL ["a", "b", "c"]], "a\nb\nc"),
             ("%", [RV (Vector.fromList [~1.0, 0.0, 1.0])], "[-1.0,0.0,1.0]"),
             ("%", [RA (Array.fromList [~1.0, 0.0, 1.0])], "[-1.0,0.0,1.0]"),
             ("%", [T (Time.fromMilliseconds 12345)], "12.345"),
-            ("The %th storey", [I 4], "The 4th storey")
+            ("The %th storey", [I 4], "The 4th storey"),
+            ("\\%%", [S "a"], "%a"),
+            ("\\\\%%", [S "a", S "b"], "\\ab"),
+            ("%\\%\\e%%\\%", [S "ab", S "c", S "d"], "ab%ecd%")
         ]
         val (result, _) =
             foldl (fn ((str, values, expected), (success, n)) =>

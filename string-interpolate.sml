@@ -27,10 +27,14 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
         else Int.toString i
 
     fun R r =
-        if r < 0.0
-        then "-" ^ R (~r)
-        else Real.fmt (StringCvt.GEN (SOME 6)) r
+        String.map (fn #"~" => #"-" | c => c)
+                   (Real.fmt (StringCvt.GEN (SOME 6)) r)
 
+    fun N n =
+        if Real.isFinite n andalso Real.== (n, Real.realRound n)
+        then I (Real.round n)
+        else R n
+                   
     val C = String.str
     fun B b = if b then "true" else "false"
     fun S s = s
