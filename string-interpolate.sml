@@ -20,36 +20,34 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
 
     fun interpolate message values =
         let open String
-            fun endsInEscape (s : string) =
+            fun checkAndSnipEndingEscape (s : string) =
                 let fun ends' (s, ~1) = false
                       | ends' (s, ix) =
                         case sub (s, ix) of
                             #"\\" => not (ends' (s, ix-1))
                           | _ => false
                 in
-                    ends' (s, size s - 1)
+                    if ends' (s, size s - 1)
+                    then (true, substring (s, 0, size s - 1))
+                    else if s <> "" andalso sub (s, size s - 1) = #"\\"
+                    then (false, substring (s, 0, size s - 1))
+                    else (false, s)
                 end
             val ff = fields (fn c => c = #"%") message
             val first = hd ff
             val rest = tl ff
+            fun folder (s, (escaping, values, acc)) =
+                let val (e, s') = checkAndSnipEndingEscape s
+                in
+                    case (values, escaping) of
+                        (_, true) => (e, values, s' :: "%" :: acc)
+                      | (x::xs, false) => (e, xs, s' :: x :: acc)
+                      | ([], false) => (tooFewValues message;
+                                        (e, values, s' :: acc))
+                end
+            val (e, s') = checkAndSnipEndingEscape first
         in
-            case foldl (fn (s, (escaping, values, acc)) =>
-                           let val e = endsInEscape s
-                           in
-                               case (values, escaping) of
-                                   (_, true) =>
-                                   (e, values, s::acc)
-                                 | ([], false) => 
-                                   (tooFewValues message; (e, values, s::acc))
-                                 | (x::xs, false) => 
-                                   (e, xs,
-                                    (if e
-                                     then substring (s, 0, size s - 1)
-                                     else s)
-                                    ::x::acc)
-                           end)
-                       (endsInEscape first, values, [first])
-                       rest of
+            case foldl folder (e, values, [s']) rest of
                 (escaping, values, acc) =>
                 let val result = concat (List.rev acc)
                 in
@@ -59,22 +57,7 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
                       | (_, values) => (tooManyValues message; result)
                 end
         end
-(*            
-    fun interpolate str values =
-        let fun intAux acc chars [] _ = String.implode (rev acc @ chars)
-              | intAux acc [] _ _ = (tooManyValues str; intAux acc [] [] false)
-              | intAux acc (first::rest) values escaped =
-                if first = #"\\" then
-                    intAux acc rest values (not escaped)
-                else if first = #"%" andalso not escaped then
-                    intAux ((rev (String.explode (hd values))) @ acc)
-                            rest (tl values) escaped
-                else
-                    intAux (first::acc) rest values false
-        in
-            intAux [] (String.explode str) values false
-        end
-*)
+
     fun I i =
         if i < 0
         then "-" ^ I (~i)
@@ -85,7 +68,9 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
                    (Real.fmt (StringCvt.GEN (SOME 6)) r)
 
     fun N n =
-        if Real.isFinite n andalso Real.== (n, Real.realRound n)
+        if Real.isFinite n andalso
+           Real.== (n, Real.realRound n) andalso
+           Real.<= (Real.abs n, 1e6)
         then I (Real.round n)
         else R n
                    
