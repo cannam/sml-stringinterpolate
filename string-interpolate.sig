@@ -16,8 +16,10 @@ signature STRING_INTERPOLATE = sig
     val B : bool -> string
     val S : string -> string
     val SL : string list -> string
-    val RV : real vector -> string
-    val RA : real array -> string
+    val RV : RealVector.vector -> string
+    val RA : RealArray.array -> string
+    val NV : RealVector.vector -> string
+    val NA : RealArray.array -> string
     val T : Time.time -> string
     val X : exn -> string
 
