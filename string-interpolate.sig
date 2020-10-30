@@ -17,6 +17,7 @@ signature STRING_INTERPOLATE = sig
     val I : int -> string
     val R : real -> string
     val N : real -> string
+    val Z : real * real -> string
     val C : char -> string
     val B : bool -> string
     val S : string -> string

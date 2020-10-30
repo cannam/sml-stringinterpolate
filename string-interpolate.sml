@@ -58,6 +58,12 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
                 end
         end
 
+    val C = String.str
+    fun B b = if b then "true" else "false"
+    fun S s = s
+    val SL = String.concatWith "\n"
+    val X = exnMessage
+            
     fun I i =
         if i < 0
         then "-" ^ I (~i)
@@ -67,29 +73,36 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
         String.map (fn #"~" => #"-" | c => c)
                    (Real.fmt (StringCvt.GEN (SOME 6)) r)
 
+    (* If we change any of the following, we'll need to change
+       string-interpolate-ffi as well: *)
+                   
     fun N n =
         if Real.isFinite n andalso
            Real.== (n, Real.realRound n) andalso
            Real.<= (Real.abs n, 1e6)
         then I (Real.round n)
         else R n
-                   
-    val C = String.str
-    fun B b = if b then "true" else "false"
-    fun S s = s
-    val SL = String.concatWith "\n"
+
+    fun Z (re, im) =
+        if im < 0.0
+        then R re ^ " - " ^ R (~im)
+        else R re ^ " + " ^ R im
+               
     fun RV v =
-        let fun toList v = rev (RealVector.foldl (op::) [] v)
-        in "[" ^ (String.concatWith "," (map R (toList v))) ^ "]"
+        let fun toList v = RealVector.foldr (op::) [] v
+        in String.concatWith "," (map R (toList v))
         end
+
     fun RA a = RV (RealArray.vector a)
+
     fun NV v =
-        let fun toList v = rev (RealVector.foldl (op::) [] v)
-        in "[" ^ (String.concatWith "," (map N (toList v))) ^ "]"
+        let fun toList v = RealVector.foldr (op::) [] v
+        in String.concatWith "," (map N (toList v))
         end
+
     fun NA a = NV (RealArray.vector a)
+
     val T = R o Time.toReal
-    val X = exnMessage
-            
+
 end
                                                        
