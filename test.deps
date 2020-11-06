@@ -1,3 +1,5 @@
 test: string-interpolate.sig
 test: string-interpolate.sml
+test: string-buffer.sig
+test: string-buffer.sml
 test: test.sml

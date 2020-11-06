@@ -1,3 +1,5 @@
 $(SML_LIB)/basis/basis.mlb
 string-interpolate.sig
 string-interpolate.sml
+string-buffer.sig
+string-buffer.sml

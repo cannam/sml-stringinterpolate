@@ -1,4 +1,6 @@
 test-ffi: string-interpolate.sig
 test-ffi: string-interpolate.sml
+test-ffi: string-buffer.sig
+test-ffi: string-buffer.sml
 test-ffi: string-interpolate-ffi.sml
 test-ffi: test.sml
