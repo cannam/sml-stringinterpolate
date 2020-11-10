@@ -102,6 +102,9 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
 
     fun NA a = NV (RealArray.vector a)
 
+    fun O NONE = "*none*"
+      | O (SOME s) = s
+
     val T = R o Time.toReal
 
 end

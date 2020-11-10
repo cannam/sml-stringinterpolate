@@ -27,6 +27,7 @@ signature STRING_INTERPOLATE = sig
     val NV : RealVector.vector -> string
     val NA : RealArray.array -> string
     val T : Time.time -> string
+    val O : string option -> string
     val X : exn -> string
 
 end
