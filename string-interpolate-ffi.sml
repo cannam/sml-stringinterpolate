@@ -8,14 +8,15 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
     val strfromd =
         _import "strfromd" public: CharArray.array * Int64.int * string * real -> int;
 
-    val strfromd_format = "%.6g" ^ String.str (Char.chr 0)
+    val format = "%.6lg" ^ String.str (Char.chr 0)
+    val format2 = ">>> %f <<<\n" ^ String.str (Char.chr 0)
     
-    fun R r =
+    fun R (r : real) =
         let val bufsize = 32
             val buffer = CharArray.array (bufsize, Char.chr 0)
             val produced = strfromd (buffer,
                                      Int64.fromInt bufsize,
-                                     strfromd_format,
+                                     format,
                                      r)
         in
             if produced > bufsize
