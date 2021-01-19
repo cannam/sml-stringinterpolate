@@ -63,11 +63,31 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
     fun S s = s
     val SL = String.concatWith "\n"
     val X = exnMessage
-            
+
+    fun replaceNegative s =
+        implode (map (fn #"~" => #"-" | c => c) (explode s))
+                
     fun I i =
         if i < 0
-        then "-" ^ I (~i)
+        then case Int.minInt of
+                 NONE => "-" ^ I (~i)
+               | SOME min =>
+                 (* assume two's complement, so ~min can't be represented *)
+                 if i > min
+                 then "-" ^ I (~i)
+                 else replaceNegative (Int.toString i)
         else Int.toString i
+                
+    fun FI i =
+        if i < 0
+        then case FixedInt.minInt of
+                 NONE => "-" ^ FI (~i)
+               | SOME min =>
+                 (* assume two's complement, so ~min can't be represented *)
+                 if i > min
+                 then "-" ^ FI (~i)
+                 else replaceNegative (FixedInt.toString i)
+        else FixedInt.toString i
 
     fun R r =
         String.map (fn #"~" => #"-" | c => c)
