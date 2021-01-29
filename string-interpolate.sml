@@ -93,6 +93,10 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
         String.map (fn #"~" => #"-" | c => c)
                    (Real.fmt (StringCvt.GEN (SOME 6)) r)
 
+    fun R32 r =
+        String.map (fn #"~" => #"-" | c => c)
+                   (Real32.fmt (StringCvt.GEN (SOME 6)) r)
+
     (* If we change any of the following, we'll need to change
        string-interpolate-ffi as well: *)
                    
