@@ -1,19 +1,39 @@
+
 signature STRING_INTERPOLATE = sig
 
-    (* The first argument is the format string and the rest are
-       arguments to be interpolated.
+    (** Interpolate arguments into a format string. The first argument
+        is the format string and the rest are arguments to be
+        interpolated.
 
-       The format string must contain a % character for each of the
-       remaining strings, which will be interpolated to replace the %
-       characters in turn.
+        Each occurrence in the format string of the character %
+        followed by a single digit is replaced by the correspondingly
+        indexed item in the remaining strings (counting from 1).
 
-       For a literal %, escape with a backslash "\%". For a literal
-       backslash immediately before a %, escape with another backslash
-       "\\%". Backslash has no special meaning anywhere else.
+        For a literal %, use %%.
     *)
     val interpolate : string -> string list -> string
 
-    (* Data-to-string conversion shorthands: *)
+    (** Interpolate arguments into a format string, including a
+        special numeric argument which is treated separately. The
+        first argument is the format string and the rest are the
+        special numeric argument and the remaining arguments to be
+        interpolated.
+
+        Each occurrence in the format string of the character %
+        followed by the character n is replaced by the numeric
+        argument as a decimal integer.
+
+        Each occurrence in the format string of the character %
+        followed by a single digit is replaced by the correspondingly
+        indexed item in the remaining strings (counting from 1).
+
+        For a literal %, use %%.
+    *)
+    val interpolate_n : string -> int * string list -> string
+
+    (*  The rest of these functions are data-to-string conversion
+        shorthands for use when creating the argument string list.
+     *)
     val I : int -> string
     val FI : FixedInt.int -> string
     val R : real -> string

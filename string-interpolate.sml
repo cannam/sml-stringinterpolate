@@ -1,23 +1,49 @@
 structure StringInterpolate : STRING_INTERPOLATE = struct
 
-    fun tooManyValues str =
-        TextIO.output
-            (TextIO.stdErr,
-             "StringInterpolate: WARNING: Too many values in string interpolation for \"" ^
-             str ^ "\"\n")
+    fun objection complaint str =
+        let val text = "StringInterpolate: WARNING: " ^ complaint ^
+                       " in string interpolation for \"" ^ str ^ "\"\n"
+        in
+            TextIO.output (TextIO.stdErr, text);
+            raise Fail text
+        end
 
-    fun tooFewValues str =
-        TextIO.output
-            (TextIO.stdErr,
-             "StringInterpolate: WARNING: Too few values in string interpolation for \"" ^
-             str ^ "\"\n")
+    (*!!! this message is, ironically, currently unused *)
+(*    val unusedValues : string -> unit = objection "Unused values" *)
+                                 
+    val absentValue : string -> unit = objection "Too few values"
+    val nonNumericIndex : string -> unit = objection "Numeric index missing"
+                                
+    fun interpolate_n_maybe (template, n_maybe, arglist) =
+        let val args = Vector.fromList arglist
+            fun arg cn =
+                if Char.isDigit cn andalso cn <> #"0"
+                then let val ix = (Char.ord cn - Char.ord #"1")
+                     in if Vector.length args > ix
+                        then String.explode (Vector.sub (args, ix))
+                        else (absentValue template; [#"%", cn])
+                     end
+                else if cn = #"n"
+                then case n_maybe of
+                         NONE => (nonNumericIndex template; [#"%", cn])
+                       | SOME n => String.explode (Int.toString n)
+                else (nonNumericIndex template; [#"%", cn])
+            fun interp acc chars =
+                case chars of
+                    #"%":: #"%"::rest => interp (#"%"::acc) rest
+                  | #"%"::cn::rest => interp ((rev (arg cn)) @ acc) rest
+                  | first::rest => interp (first::acc) rest
+                  | [] => String.implode (rev acc)
+        in
+            interp [] (String.explode template)
+        end
+                             
+    fun interpolate message values =
+        interpolate_n_maybe (message, NONE, values)
 
-    fun looseEscape str =
-        TextIO.output
-            (TextIO.stdErr,
-             "StringInterpolate: WARNING: Spare escape character at end of string in \"" ^
-             str ^ "\"\n")
-
+    fun interpolate_n message (n, values) =
+        interpolate_n_maybe (message, SOME n, values)
+(*
     fun interpolate message values =
         let open String
             fun checkAndSnipEndingEscape (s : string) =
@@ -57,7 +83,7 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
                       | (_, values) => (tooManyValues message; result)
                 end
         end
-
+*)
     val C = String.str
     fun B b = if b then "true" else "false"
     fun S s = s
