@@ -4,8 +4,7 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
         let val text = "StringInterpolate: WARNING: " ^ complaint ^
                        " in string interpolation for \"" ^ str ^ "\"\n"
         in
-            TextIO.output (TextIO.stdErr, text);
-            raise Fail text
+            TextIO.output (TextIO.stdErr, text)
         end
 
     (*!!! this message is, ironically, currently unused *)
@@ -43,47 +42,7 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
 
     fun interpolate_n message (n, values) =
         interpolate_n_maybe (message, SOME n, values)
-(*
-    fun interpolate message values =
-        let open String
-            fun checkAndSnipEndingEscape (s : string) =
-                let fun ends' (s, ~1) = false
-                      | ends' (s, ix) =
-                        case sub (s, ix) of
-                            #"\\" => not (ends' (s, ix-1))
-                          | _ => false
-                in
-                    if ends' (s, size s - 1)
-                    then (true, substring (s, 0, size s - 1))
-                    else if s <> "" andalso sub (s, size s - 1) = #"\\"
-                    then (false, substring (s, 0, size s - 1))
-                    else (false, s)
-                end
-            val ff = fields (fn c => c = #"%") message
-            val first = hd ff
-            val rest = tl ff
-            fun folder (s, (escaping, values, acc)) =
-                let val (e, s') = checkAndSnipEndingEscape s
-                in
-                    case (values, escaping) of
-                        (_, true) => (e, values, s' :: "%" :: acc)
-                      | (x::xs, false) => (e, xs, s' :: x :: acc)
-                      | ([], false) => (tooFewValues message;
-                                        (e, values, s' :: acc))
-                end
-            val (e, s') = checkAndSnipEndingEscape first
-        in
-            case foldl folder (e, values, [s']) rest of
-                (escaping, values, acc) =>
-                let val result = concat (List.rev acc)
-                in
-                    case (escaping, values) of
-                        (false, []) => result
-                      | (true, []) => (looseEscape message; result)
-                      | (_, values) => (tooManyValues message; result)
-                end
-        end
-*)
+
     val C = String.str
     fun B b = if b then "true" else "false"
     fun S s = s
