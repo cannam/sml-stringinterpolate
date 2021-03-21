@@ -6,9 +6,6 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
         in
             TextIO.output (TextIO.stdErr, text)
         end
-
-    (*!!! this message is, ironically, currently unused *)
-(*    val unusedValues : string -> unit = objection "Unused values" *)
                                  
     val absentValue : string -> unit = objection "Too few values"
     val nonNumericIndex : string -> unit = objection "Numeric index missing"
