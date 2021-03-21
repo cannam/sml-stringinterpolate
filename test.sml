@@ -51,6 +51,7 @@ local
         ("escape-middle-1", "q%%%1", [S "a"], ["q%a"]),
         ("escape-middle-2", "%1%%%2", [S "a", S "b"], ["a%b"]),
         ("escape-end", "%1%%", [S "a"], ["a%"]),
+        ("loose-end", "%1%", [S "a"], ["a%"]),
         ("out-of-order-2", "%2%1", [S "a", S "b"], ["ba"]),
         ("out-of-order-3", "%2%3%1", [S "a", S "b", S "c"], ["bca"]),
         ("repeated", "%2%3%3%1", [S "a", S "b", S "c"], ["bcca"])
