@@ -6,7 +6,7 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
     open StringInterpolate
 
     val strfromd =
-        _import "strfromd" public: CharArray.array * Int64.int * string * real -> int;
+        _import "strfromd" public: CharArray.array * Int64.int * string * real -> Int32.int;
 
     val format = "%.6lg" ^ String.str (Char.chr 0)
     val format2 = ">>> %f <<<\n" ^ String.str (Char.chr 0)
@@ -14,10 +14,10 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
     fun R (r : real) =
         let val bufsize = 32
             val buffer = CharArray.array (bufsize, Char.chr 0)
-            val produced = strfromd (buffer,
-                                     Int64.fromInt bufsize,
-                                     format,
-                                     r)
+            val produced = Int32.toInt (strfromd (buffer,
+                                                  Int64.fromInt bufsize,
+                                                  format,
+                                                  r))
         in
             if produced > bufsize
             then raise Subscript
