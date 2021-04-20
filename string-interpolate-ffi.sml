@@ -9,7 +9,6 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
         _import "strfromd" public: CharArray.array * Int64.int * string * real -> Int32.int;
 
     val format = "%.6lg" ^ String.str (Char.chr 0)
-    val format2 = ">>> %f <<<\n" ^ String.str (Char.chr 0)
     
     fun R (r : real) =
         let val bufsize = 32
