@@ -5,18 +5,38 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
 
     open StringInterpolate
 
-    val strfromd =
-        _import "strfromd" public: CharArray.array * Int64.int * string * real -> Int32.int;
+    val string_from_real =
+        _import "string_from_double" public: CharArray.array * Int64.int * real -> Int32.int;
+
+    val string_from_real32 =
+        _import "string_from_float" public: CharArray.array * Int64.int * Real32.real -> Int32.int;
+
+    val string_from_int64 =
+        _import "string_from_int64" public: CharArray.array * Int64.int * Int64.int -> Int32.int;
 
     val format = "%.6lg" ^ String.str (Char.chr 0)
     
     fun R (r : real) =
         let val bufsize = 32
             val buffer = CharArray.array (bufsize, Char.chr 0)
-            val produced = Int32.toInt (strfromd (buffer,
-                                                  Int64.fromInt bufsize,
-                                                  format,
-                                                  r))
+            val produced = Int32.toInt (string_from_real
+                                            (buffer,
+                                             Int64.fromInt bufsize,
+                                             r))
+        in
+            if produced > bufsize
+            then raise Subscript
+            else CharArraySlice.vector
+                     (CharArraySlice.slice (buffer, 0, SOME produced))
+        end
+    
+    fun R32 (r : Real32.real) =
+        let val bufsize = 32
+            val buffer = CharArray.array (bufsize, Char.chr 0)
+            val produced = Int32.toInt (string_from_real32
+                                            (buffer,
+                                             Int64.fromInt bufsize,
+                                             r))
         in
             if produced > bufsize
             then raise Subscript
