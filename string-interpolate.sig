@@ -44,6 +44,7 @@ signature STRING_INTERPOLATE = sig
     val B : bool -> string
     val S : string -> string
     val SL : string list -> string
+    val SV : string vector -> string
     val RV : RealVector.vector -> string
     val RA : RealArray.array -> string
     val NV : RealVector.vector -> string

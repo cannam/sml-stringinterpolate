@@ -44,6 +44,7 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
     fun B b = if b then "true" else "false"
     fun S s = s
     val SL = String.concatWith "\n"
+    fun SV v = "[" ^ String.concatWith "," (Vector.foldr (op::) [] v) ^ "]"
     val X = exnMessage
 
     fun replaceNegative s =
