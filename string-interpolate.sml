@@ -43,8 +43,8 @@ structure StringInterpolate : STRING_INTERPOLATE = struct
     val C = String.str
     fun B b = if b then "true" else "false"
     fun S s = s
-    val SL = String.concatWith "\n"
-    fun SV v = "[" ^ String.concatWith "," (Vector.foldr (op::) [] v) ^ "]"
+    fun SL l = "[" ^ String.concatWith ", " l ^ "]"
+    fun SV v = SL (Vector.foldr (op::) [] v)
     val X = exnMessage
 
     fun replaceNegative s =
