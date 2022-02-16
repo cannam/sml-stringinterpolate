@@ -39,7 +39,7 @@ local
         ("number-negative-large", "%1", [N ~1.0e14], ["-1E14","-1e+14"]),
         ("bool-true", "%1", [B true], ["true"]),
         ("bool-false", "%1", [B false], ["false"]),
-        ("stringlist", "%1", [SL ["a", "b", "c"]], ["a\nb\nc"]),
+        ("stringlist", "%1", [SL ["a", "b", "c"]], ["[a, b, c]"]),
         ("realvector", "%1", [RV (RealVector.fromList [~1.0, 0.0, 1.2])], ["-1.0,0.0,1.2", "-1,0,1.2"]),
         ("realarray", "%1", [RA (RealArray.fromList [~1.0, 0.0, 1.2])], ["-1.0,0.0,1.2","-1,0,1.2"]),
         ("numbervector", "%1", [NV (RealVector.fromList [~1.0, 0.0, 1.2])], ["-1,0,1.2"]),
